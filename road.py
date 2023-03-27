@@ -19,6 +19,7 @@ class Road:
             cur_line_pos_x = cur_line_pos_x + self.line_width + window_width / lines_count * space_between_x_coefficient
 
     def blit(self, surface: pygame.Surface):
+        surface.fill('Black')
         for line_pos_x in self.lines_pos_x:
             line = pygame.Surface((self.line_width, self.line_height))
             line.fill('White')
