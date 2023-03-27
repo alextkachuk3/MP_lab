@@ -1,6 +1,7 @@
 import pygame
 import os
 
+from car import Car
 from road import Road
 
 window_width = 1000
@@ -13,14 +14,12 @@ pygame.display.set_caption('Вжух вжух')
 road = Road(window_width, window_height, 7)
 road.blit(screen)
 
-picture = pygame.image.load(os.path.join('images', 'car.png'))
-picture = pygame.transform.smoothscale(picture, (300, 150))
-
+car = Car(window_width, window_height, 100, 375)
 
 running = True
 
 while running:
-    screen.blit(picture, (100, 375))
+    car.blit(screen)
     pygame.display.update()
 
     for event in pygame.event.get():
