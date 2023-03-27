@@ -16,11 +16,11 @@ class Car:
         self.y = y
         self.speed = 0
         self.angle = 0
-        self.max_speed = 2
-        self.min_speed = -1.5
+        self.max_speed = 0.8
+        self.min_speed = -0.7
         self.acceleration = 0.5
         self.friction = 0.1
-        self.turn_speed = 0.7
+        self.turn_speed = 0.5
         self.rotated_rectangle = self.sprite_rotated.get_rect(center=(round(self.x), round(self.y)))
 
     def blit(self, surface: pygame.Surface):
@@ -46,5 +46,9 @@ class Car:
         self.speed = max(self.speed - self.friction, 0) if self.speed > 0 else min(self.speed + self.friction, 0)
         self.x += self.speed * math.cos(math.radians(self.angle))
         self.y -= self.speed * math.sin(math.radians(self.angle))
+        if self.angle > 180:
+            self.angle = -180
+        elif self.angle < -180:
+            self.angle = 180
         self.sprite_rotated = pygame.transform.rotate(self.sprite, self.angle)
         self.rotated_rectangle = self.sprite_rotated.get_rect(center=(round(self.x), round(self.y)))
