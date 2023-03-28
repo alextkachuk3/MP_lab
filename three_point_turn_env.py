@@ -22,7 +22,8 @@ class ThreePointTurnEnv(gym.Env):
         #                                 Box(low=np.array([0]), high=np.array([1000])),
         #                                 Box(low=np.array([0]), high=np.array([600]))))
         self.observation_space = Box(low=np.array([-180.0]), high=np.array([180.0]))
-        self.length = 2000
+        self.length = 5000
+        self.prev_angle = 0
 
     def step(self, action):
         if action == 0:
@@ -34,10 +35,40 @@ class ThreePointTurnEnv(gym.Env):
         elif action == 3:
             self.car.backward()
 
-        if self.car.angle < 0:
-            reward = 1
-        else:
-            reward = -1
+        # if self.car.angle < -179.5 or self.car.angle > 179.5:
+        #     reward = 1
+        # elif self.car.angle < -160 or self.car.angle > 160:
+        #     reward = 0.8
+        # elif self.car.angle < -120 or self.car.angle > 120:
+        #     reward = 0.1
+        # elif self.car.angle < -90 or self.car.angle > 90:
+        #     reward = -0.1
+        # elif self.car.angle < -60 or self.car.angle > 60:
+        #     reward = -0.8
+        # elif self.car.angle < -30 or self.car.angle > 30:
+        #     reward = -0.9
+        # else:
+        #     reward = -1
+
+        # if self.car.angle < 0:
+        #     reward = -self.car.angle / 180
+        # else:
+        #     reward = self.car.angle / 180
+
+        # if self.car.angle < 0:
+        #     if self.prev_angle > self.car.angle:
+        #         reward = 1
+        #     else:
+        #         reward = -1
+        # else:
+        #     if self.prev_angle < self.car.angle:
+        #         reward = 1
+        #     else:
+        #         reward = -1
+
+        reward = self.car.angle - self.prev_angle
+
+        self.prev_angle = self.car.angle
 
         self.length -= 1
 
@@ -58,7 +89,8 @@ class ThreePointTurnEnv(gym.Env):
             pygame.display.update()
 
     def reset(self):
-        self.length = 2000
+        self.prev_angle = 0
+        self.length = 5000
         self.car.x = 100
         self.car.y = 450
         self.car.angle = 0
@@ -74,6 +106,6 @@ pygame.display.set_caption('Вжух вжух')
 env = ThreePointTurnEnv()
 
 model = DQN("MlpPolicy", env, verbose=1)
-model.learn(total_timesteps=10)
+model.learn(total_timesteps=100000)
 model.save('PPO')
 evaluate_policy(model, env, n_eval_episodes=10, render=True)
