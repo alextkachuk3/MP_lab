@@ -13,9 +13,11 @@ pygame.display.set_caption('Вжух вжух')
 
 road = Road(window_width, window_height, 7)
 
-car = Car(window_width, window_height, 100, 450)
+car = Car(window_width, window_height, 230, 450)
 
 running = True
+
+k = 0
 
 while running:
     road.blit(screen)
@@ -41,3 +43,9 @@ while running:
         if event.type == pygame.QUIT:
             running = False
             pygame.quit()
+
+    print("x={x} y={y} angle={angle}".format(x=str(car.x), y=str(car.y), angle=str(car.angle)))
+
+    if car.check_border_collision():
+        print("Meow {k} ".format(k=str(k)))
+        k = k + 1

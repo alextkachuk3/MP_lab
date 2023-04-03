@@ -7,6 +7,8 @@ class Car:
     def __init__(self, window_width, window_height, x, y):
         car_width_coefficient = 0.44
         car_height_coefficient = 0.42
+        self.window_width = window_width
+        self.window_height = window_height
         self.car_width = window_width * car_width_coefficient
         self.car_height = window_height * car_height_coefficient
         self.sprite = pygame.image.load(os.path.join('images', 'car.png'))
@@ -22,6 +24,7 @@ class Car:
         self.friction = 0.1
         self.turn_speed = 0.6
         self.rotated_rectangle = self.sprite_rotated.get_rect(center=(round(self.x), round(self.y)))
+        self.window_rectangle = pygame.Rect(0, 0, window_width, window_height)
 
     def blit(self, surface: pygame.Surface):
         surface.blit(self.sprite_rotated, self.rotated_rectangle)
@@ -68,3 +71,11 @@ class Car:
             self.angle = 180
         self.sprite_rotated = pygame.transform.rotate(self.sprite, self.angle)
         self.rotated_rectangle = self.sprite_rotated.get_rect(center=(round(self.x), round(self.y)))
+
+    def check_border_collision(self):
+
+        car_rect = self.sprite_rotated.get_rect(center=(round(self.x), round(self.y)))
+        if not self.window_rectangle.contains(car_rect):
+            return True
+        return False
+
