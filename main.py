@@ -22,19 +22,24 @@ while running:
     car.blit(screen)
     pygame.display.update()
 
+    car.update_position()
+
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_w]:
+    if keys[pygame.K_w] and keys[pygame.K_a]:
+        car.forward_left()
+    elif keys[pygame.K_w] and keys[pygame.K_d]:
+        car.forward_right()
+    elif keys[pygame.K_w]:
         car.forward()
-    if keys[pygame.K_s]:
+    elif keys[pygame.K_s] and keys[pygame.K_a]:
+        car.backward_right()
+    elif keys[pygame.K_s] and keys[pygame.K_d]:
+        car.backward_left()
+    elif keys[pygame.K_s]:
         car.backward()
-    if keys[pygame.K_a]:
-        car.left()
-    if keys[pygame.K_d]:
-        car.right()
 
     for event in pygame.event.get():
-
         if event.type == pygame.QUIT:
             running = False
             pygame.quit()

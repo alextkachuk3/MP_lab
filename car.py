@@ -5,8 +5,8 @@ import math
 
 class Car:
     def __init__(self, window_width, window_height, x, y):
-        car_width_coefficient = 0.28
-        car_height_coefficient = 0.27
+        car_width_coefficient = 0.44
+        car_height_coefficient = 0.42
         self.car_width = window_width * car_width_coefficient
         self.car_height = window_height * car_height_coefficient
         self.sprite = pygame.image.load(os.path.join('images', 'car.png'))
@@ -16,11 +16,11 @@ class Car:
         self.y = y
         self.speed = 0
         self.angle = 0
-        self.max_speed = 0.8
-        self.min_speed = -0.7
-        self.acceleration = 0.5
+        self.max_speed = 1.4
+        self.min_speed = -1.0
+        self.acceleration = 0.7
         self.friction = 0.1
-        self.turn_speed = 0.5
+        self.turn_speed = 0.6
         self.rotated_rectangle = self.sprite_rotated.get_rect(center=(round(self.x), round(self.y)))
 
     def blit(self, surface: pygame.Surface):
@@ -30,9 +30,25 @@ class Car:
         self.speed = min(self.speed + self.acceleration, self.max_speed)
         self.update_position()
 
+    def forward_left(self):
+        self.forward()
+        self.left()
+
+    def forward_right(self):
+        self.forward()
+        self.right()
+
     def backward(self):
         self.speed = max(self.speed - self.acceleration, self.min_speed)
         self.update_position()
+
+    def backward_left(self):
+        self.backward()
+        self.left()
+
+    def backward_right(self):
+        self.backward()
+        self.right()
 
     def left(self):
         self.angle += self.turn_speed
