@@ -22,8 +22,6 @@ while running:
     car.blit(screen)
     pygame.display.update()
 
-    car.update_position()
-
     keys = pygame.key.get_pressed()
 
     if keys[pygame.K_w] and keys[pygame.K_a]:

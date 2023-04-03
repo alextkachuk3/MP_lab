@@ -55,6 +55,7 @@ class ThreePointTurnEnv(gym.Env):
 
     def render(self, mode):
         if mode == 'human':
+            pygame.event.get()
             self.road.blit(screen)
             self.car.blit(screen)
             pygame.display.update()
@@ -62,7 +63,7 @@ class ThreePointTurnEnv(gym.Env):
     def reset(self):
         self.stage = 0
         self.prev_angle = 0
-        self.length = 3000
+        self.length = 2000
         self.car.x = 100
         self.car.y = 450
         self.car.angle = 0
@@ -72,8 +73,8 @@ class ThreePointTurnEnv(gym.Env):
 
 env = ThreePointTurnEnv()
 
-load = False
-render = False
+load = True
+render = True
 
 if load:
     model = DQN.load('PPO')
