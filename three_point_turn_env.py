@@ -12,6 +12,8 @@ from road import Road
 window_width = 1000
 window_height = 600
 
+render = 2
+
 
 class ThreePointTurnEnv(gym.Env):
     def __init__(self):
@@ -24,11 +26,15 @@ class ThreePointTurnEnv(gym.Env):
                                        'y': Box(low=np.array([-1500.0]), high=np.array([3000.0]))})
         self.prev_angle = None
         self.length = None
-
-
+        self.screen = None
         self.reset()
 
+        if render == 2:
+            self.init_render()
+
     def step(self, action):
+        self.length -= 1
+
         if action == 0:
             self.car.forward_left()
         elif action == 1:
@@ -43,13 +49,15 @@ class ThreePointTurnEnv(gym.Env):
             self.car.backward_left()
 
         if self.car.check_border_collision():
-            reward = -100.0
+            reward = -100
+            self.length = 0
+
         else:
-            reward = self.car.angle - self.prev_angle * 180
+            reward = self.car.angle - self.prev_angle
 
         self.prev_angle = self.car.angle
 
-        self.length -= 1
+
 
         if self.length <= 0:
             done = True
@@ -58,41 +66,43 @@ class ThreePointTurnEnv(gym.Env):
 
         info = {}
 
+        if render == 2:
+            self.render(mode='human')
+
         return {'angle': self.car.angle, 'x': self.car.x, 'y': self.car.y}, reward, done, info
 
     def render(self, mode):
         if mode == 'human':
             pygame.event.get()
-            self.road.blit(screen)
-            self.car.blit(screen)
+            self.road.blit(self.screen)
+            self.car.blit(self.screen)
             pygame.display.update()
 
     def reset(self):
         self.prev_angle = 0
-        self.length = 1500
+        self.length = 4500
         self.car.x = 230
         self.car.y = 450
         self.car.angle = 0
         self.car.speed = 0
         return {'angle': self.car.angle, 'x': self.car.x, 'y': self.car.y}
 
+    def init_render(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((window_width, window_height))
+        pygame.display.set_caption('Вжух вжух')
+
 
 env = ThreePointTurnEnv()
 
 load = False
-render = True
 
 if load:
     model = DQN.load('DQN')
-
 else:
     model = DQN("MultiInputPolicy", env, verbose=1)
     model.learn(total_timesteps=100000)
     model.save('DQN')
 
-if render:
-    pygame.init()
-
-    screen = pygame.display.set_mode((window_width, window_height))
-    pygame.display.set_caption('Вжух вжух')
-    evaluate_policy(model, env, n_eval_episodes=3, render=render)
+if render == 1:
+    evaluate_policy(model, env, n_eval_episodes=3, render=True)

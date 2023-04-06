@@ -5,8 +5,8 @@ import math
 
 class Car:
     def __init__(self, window_width, window_height, x, y):
-        car_width_coefficient = 0.44
-        car_height_coefficient = 0.42
+        car_width_coefficient = 0.34
+        car_height_coefficient = 0.32
         self.window_width = window_width
         self.window_height = window_height
         self.car_width = window_width * car_width_coefficient
