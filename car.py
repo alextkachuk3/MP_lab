@@ -18,19 +18,39 @@ class Car:
         self.y = y
         self.speed = 0
         self.angle = 0
-        self.max_speed = 1.4
-        self.min_speed = -1.0
-        self.acceleration = 0.7
-        self.friction = 0.1
-        self.turn_speed = 0.6
+        self.acceleration = 0.0004
+        self.turn_speed = 0.001
+        self.forward_count = 0
+        self.backward_count = 0
+        self.max_forward_count = 350
+        self.max_backward_count = 350
         self.rotated_rectangle = self.sprite_rotated.get_rect(center=(round(self.x), round(self.y)))
         self.window_rectangle = pygame.Rect(0, 0, window_width, window_height)
+
+    def reset(self, x, y):
+        self.x = x
+        self.y = y
+        self.speed = 0
+        self.angle = 0
+        self.forward_count = 0
+        self.backward_count = 0
+        self.rotated_rectangle = self.sprite_rotated.get_rect(center=(round(self.x), round(self.y)))
 
     def blit(self, surface: pygame.Surface):
         surface.blit(self.sprite_rotated, self.rotated_rectangle)
 
+    def no_action(self):
+        if self.backward_count > 0:
+            self.backward_count -= 1
+        if self.forward_count > 0:
+            self.forward_count -= 1
+        self.update_position()
+
     def forward(self):
-        self.speed = min(self.speed + self.acceleration, self.max_speed)
+        if self.backward_count > 0:
+            self.backward_count = max(self.backward_count - 1, 0)
+        else:
+            self.forward_count = min(self.forward_count + 1, self.max_forward_count)
         self.update_position()
 
     def forward_left(self):
@@ -42,7 +62,10 @@ class Car:
         self.right()
 
     def backward(self):
-        self.speed = max(self.speed - self.acceleration, self.min_speed)
+        if self.forward_count > 0:
+            self.forward_count = max(self.forward_count - 1, 0)
+        else:
+            self.backward_count = min(self.backward_count + 1, self.max_backward_count)
         self.update_position()
 
     def backward_left(self):
@@ -54,15 +77,18 @@ class Car:
         self.right()
 
     def left(self):
-        self.angle += self.turn_speed
+        self.angle += self.turn_speed * max(self.forward_count, self.backward_count)
         self.update_position()
 
     def right(self):
-        self.angle -= self.turn_speed
+        self.angle -= self.turn_speed * max(self.forward_count, self.backward_count)
         self.update_position()
 
     def update_position(self):
-        self.speed = max(self.speed - self.friction, 0) if self.speed > 0 else min(self.speed + self.friction, 0)
+        if self.forward_count > 0:
+            self.speed = self.forward_count ** 1.3 * self.acceleration
+        elif self.backward_count > 0:
+            self.speed = self.backward_count ** 1.3 * -self.acceleration
         self.x += self.speed * math.cos(math.radians(self.angle))
         self.y -= self.speed * math.sin(math.radians(self.angle))
         if self.angle > 180:
@@ -78,4 +104,3 @@ class Car:
         if not self.window_rectangle.contains(car_rect):
             return True
         return False
-

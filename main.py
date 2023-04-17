@@ -37,13 +37,23 @@ while running:
         car.backward_left()
     elif keys[pygame.K_s]:
         car.backward()
+    else:
+        car.no_action()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
             pygame.quit()
 
-    print("x={x} y={y} angle={angle}".format(x=str(car.x), y=str(car.y), angle=str(car.angle)))
+    print("x={x} "
+          "y={y} "
+          "angle={angle} "
+          "forward_count={forward_count} "
+          "backward_count={backward_count}".format(x=str(car.x),
+                                                   y=str(car.y),
+                                                   angle=str(car.angle),
+                                                   forward_count=str(car.forward_count),
+                                                   backward_count=str(car.backward_count)))
 
     if car.check_border_collision():
         print("Collision detected! {k} ".format(k=str(k)))
