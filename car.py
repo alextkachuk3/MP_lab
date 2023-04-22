@@ -63,7 +63,7 @@ class Car:
 
     def backward(self):
         if self.forward_count > 0:
-            self.forward_count = max(self.forward_count - 1, 0)
+            self.forward_count = max(self.forward_count - 2, 0)
         else:
             self.backward_count = min(self.backward_count + 1, self.max_backward_count)
         self.update_position()
@@ -99,8 +99,17 @@ class Car:
         self.rotated_rectangle = self.sprite_rotated.get_rect(center=(round(self.x), round(self.y)))
 
     def check_border_collision(self):
-
         car_rect = self.sprite_rotated.get_rect(center=(round(self.x), round(self.y)))
         if not self.window_rectangle.contains(car_rect):
             return True
         return False
+
+    def distance_to_border(self):
+        car_rect = self.sprite_rotated.get_rect(center=(round(self.x), round(self.y)))
+
+        left_distance = car_rect.left
+        right_distance = self.window_width - car_rect.right
+        top_distance = car_rect.top
+        bottom_distance = self.window_height - car_rect.bottom
+
+        return min(left_distance, right_distance, top_distance, bottom_distance)

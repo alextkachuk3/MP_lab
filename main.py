@@ -54,6 +54,7 @@ while running:
                                                    angle=str(car.angle),
                                                    forward_count=str(car.forward_count),
                                                    backward_count=str(car.backward_count)))
+    print("Distance to border {}".format(str(car.distance_to_border())))
 
     if car.check_border_collision():
         print("Collision detected! {k} ".format(k=str(k)))
